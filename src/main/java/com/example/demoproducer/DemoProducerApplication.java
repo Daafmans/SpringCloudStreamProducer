@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -28,14 +30,17 @@ public class DemoProducerApplication {
 
     @Bean
     public Supplier<Movie> supplier() {
-        return () -> MOVIES.get((int)(MOVIES.size() * Math.random()));
+        return () -> {
+            Collections.shuffle(MOVIES);
+            return MOVIES.iterator().next();
+        };
     }
 
-    private static final List<Movie> MOVIES = List.of(
+    private static final List<Movie> MOVIES = new LinkedList<>(List.of(
             new Movie("Hello Kitty versus Chthulhu", 4),
             new Movie("Spongebob Squarepants visits North Korea", 5),
             new Movie("Expert Tax Evasion with Bob the Builder", 2)
-    );
+    ));
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.ACCEPTED)
